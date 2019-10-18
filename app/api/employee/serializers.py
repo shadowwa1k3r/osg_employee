@@ -116,6 +116,7 @@ class Employee_listSerializer(ModelSerializer):
     user = UserSerilizer()
     employee_group_set = Employee_groupSerializer(many=True, read_only=True)
     attendance_set = AttandanceSerialzier(many=True, read_only=True)
+    status = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Employee
@@ -126,7 +127,17 @@ class Employee_listSerializer(ModelSerializer):
                   'position',
                   'user',
                   'employee_group_set',
-                  'attendance_set')
+                  'attendance_set',
+                  'status')
+
+    def get_status(self, obj):
+        resp = False
+        today = obj.attendance_set.last()
+        if today.date_start:
+            resp = True
+        if today.date_finish:
+            resp = False
+        return resp
 
     def to_representation(self, instance):
         employee_status = super(Employee_listSerializer, self).to_representation(instance)
