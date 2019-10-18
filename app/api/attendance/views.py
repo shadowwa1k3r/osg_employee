@@ -23,10 +23,12 @@ class Attandance_createAPIView(APIView):
     def post(self, request):
         q_code = request.POST.get('qr_code')
         e = Employee.objects.get(register_num=q_code)
+
         if e.attendance_set.filter(created=datetime.now().date()).count()>0:
             e_finish = e.attendance_set.get(created=datetime.now().date())
             e_finish.date_finish = datetime.now()
             e_finish.save()
+            return Response(status=202, data={'id': e.id, 'status': 'left'})
         else:
             a = Attendance.objects.create(employee_id=e, date_start = datetime.now())
             # a.date_start = datetime.now()
@@ -34,4 +36,4 @@ class Attandance_createAPIView(APIView):
 
         print(e.attendance_set.filter(created=datetime.now().date()).count())
         #     pass
-        return Response(status=200)
+        return Response(status=201, data={'id': e.id, 'status': 'arrived'})

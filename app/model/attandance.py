@@ -21,14 +21,15 @@ def create_check_out(sender, instance, created, **kwargs):
             request = instance.employee_id
             att = Attendance.objects.filter(employee_id=request)
             att = att.exclude(date_start=instance.date_start)
-            last_date = att.last().date_start.date()
-            new_date = instance.date_start.date()
-            subtitution = new_date - last_date
-            for attandance in range(1, subtitution.days):
-                at = Attendance.objects.create(employee_id=instance.employee_id, check_out=False)
-                at.created = last_date+timedelta(days=attandance)
-                at.save()
-            print('DAYS', subtitution)
+            if att.count()>1:
+                last_date = att.last().date_start.date()
+                new_date = instance.date_start.date()
+                subtitution = new_date - last_date
+                for attandance in range(1, subtitution.days):
+                    at = Attendance.objects.create(employee_id=instance.employee_id, check_out=False)
+                    at.created = last_date+timedelta(days=attandance)
+                    at.save()
+                print('DAYS', subtitution)
 
 
 

@@ -8,7 +8,7 @@ from app.api.group.serializers import GroupSerializer
 from app.api.salary.serializers import Employee_salarySerializer
 
 from app.api.user.serializers import UserSerilizer
-from app.model import Employee, Employee_group
+from app.model import Employee, Employee_group, Attendance
 from rest_framework import serializers
 from app.api.position.serializers import PositionSerialzer
 
@@ -103,9 +103,19 @@ class Employee_groupSerializer(ModelSerializer):
         return instance
 
 
+class AttandanceSerialzier(ModelSerializer):
+    # employee_id = Employee_listSerializer(read_only=True)
+    # employee_id_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Attendance
+        fields = ('id', 'date_start', 'date_finish')
+
+
 class Employee_listSerializer(ModelSerializer):
     user = UserSerilizer()
     employee_group_set = Employee_groupSerializer(many=True, read_only=True)
+    attendance_set = AttandanceSerialzier(many=True, read_only=True)
 
     class Meta:
         model = Employee
@@ -115,7 +125,8 @@ class Employee_listSerializer(ModelSerializer):
                   'address',
                   'position',
                   'user',
-                  'employee_group_set')
+                  'employee_group_set',
+                  'attendance_set')
 
     def to_representation(self, instance):
         employee_status = super(Employee_listSerializer, self).to_representation(instance)
@@ -134,6 +145,8 @@ class Employee_listSerializer(ModelSerializer):
             employee_status.pop('position')
             employee_status.pop('user')
             employee_status.pop('employee_group_set')
+            employee_status.pop('employee_attendance_set')
+
 
         return employee_status
 
