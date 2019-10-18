@@ -132,7 +132,8 @@ class Employee_listSerializer(ModelSerializer):
 
     def get_status(self, obj):
         resp = False
-        today = obj.attendance_set.last()
+        aset = Attendance.objects.filter(employee_id=obj)
+        today = aset.last()
         if today.date_start:
             resp = True
         if today.date_finish:
