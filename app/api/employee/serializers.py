@@ -191,6 +191,7 @@ class EmployeeGroupSerializer(ModelSerializer):
 
 class Employee_infoSerializer(ModelSerializer):
     position = PositionSerialzer(read_only=True)
+    user = UserSerilizer(read_only=True)
     employee_salary_set = Employee_salarySerializer(read_only=True, many=True)
     employee_group_set = EmployeeGroupSerializer(read_only=True, many=True)
 
