@@ -51,6 +51,13 @@ class Employee_listAPIView(ListAPIView):
     queryset = Employee.objects.all()
     permission_classes = [IsAdminUser, IsManagerUser]
 
+    def get_queryset(self):
+        qs = Employee.objects.all()
+        id = self.request.GET.get('id')
+        if id:
+            qs = qs.filter(id=id)
+        return qs
+
 
 
 class Employee_groupCreateapiView(CreateAPIView):
